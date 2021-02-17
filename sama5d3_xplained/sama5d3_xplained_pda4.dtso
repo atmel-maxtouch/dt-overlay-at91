@@ -12,27 +12,23 @@
 
 #include "dt-bindings/pinctrl/at91.h"
 
-&i2c1 {
+&spi0 {
+	cs-gpios = <&pioD 13 0>, <0>, <0>, <&pioD 16 1>;
 	#address-cells = <1>;
 	#size-cells = <0>;
-	qt1070: keyboard@1b {
-		compatible = "qt1070";
-		reg = <0x1b>;
-		interrupt-parent = <&pioE>;
-		interrupts = <8 0x0>;
-		pinctrl-names = "default";
-		pinctrl-0 = <&pinctrl_qt1070_irq>;
-		wakeup-source;
-		status = "okay";
-	};
+	status = "okay";
 
-	atmel_mxt_ts@4a {
-		compatible = "atmel,atmel_mxt_ts";
-		reg = <0x4a>;
-		interrupt-parent = <&pioE>;
-		interrupts = <7 0x0>;
+	mchp_spi_ts@3 {
+		compatible = "microchip, mchp_spi_ts";
+		spi-max-frequency = <1000000>;
+		reg = <3>;
+		spi-cpha;
+		spi-cpol;
+	 	interrupt-parent = <&pioE>;
+		interrupts = <7 0x2>;
+		reset-gpios = <&pioE 8 1>;	/* Active low = 1 */
 		pinctrl-names = "default";
-		pinctrl-0 = <&pinctrl_mxt_irq>;
+		pinctrl-0 = <&pinctrl_mxt_irq &pinctrl_mxt_rst>;
 		status = "okay";
 	};
 };
@@ -56,14 +52,14 @@
 
 &pinctrl {
 	board {
-		pinctrl_qt1070_irq: pinctrl_qt1070_irq {
-			atmel,pins =
-				<AT91_PIOE 8 AT91_PERIPH_GPIO AT91_PINCTRL_PULL_UP_DEGLITCH>;
-		};
-
-		pinctrl_mxt_irq: pinctrl_mxt_irq {
+		pinctrl_mxt_irq: mxt_ts_irq {
 			atmel,pins =
 				<AT91_PIOE 7 AT91_PERIPH_GPIO AT91_PINCTRL_PULL_UP_DEGLITCH>;
+		};
+
+		pinctrl_mxt_rst: mxt_ts_rst {
+			atmel,pins =
+				<AT91_PIOE 8 AT91_PERIPH_GPIO AT91_PINCTRL_DEGLITCH>;
 		};
 	};
 };
