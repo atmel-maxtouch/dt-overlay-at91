@@ -19,16 +19,32 @@
 	status = "okay";
 
 	mchp_spi_ts@3 {
-		compatible = "microchip, mchp_spi_ts";
+		compatible = "microchip,mchp_spi_ts";
 		spi-max-frequency = <1000000>;
 		reg = <3>;
-		spi-cpha;
-		spi-cpol;
+		spi-cpha = <1>;
+		spi-cpol = <1>;
 	 	interrupt-parent = <&pioE>;
-		interrupts = <7 0x2>;
-		reset-gpios = <&pioE 8 1>;	/* Active low = 1 */
+		interrupts = <6 0x2>;
 		pinctrl-names = "default";
-		pinctrl-0 = <&pinctrl_mxt_irq &pinctrl_mxt_rst>;
+		pinctrl-0 = <&pinctrl_mxt_irq_spi>;
+		status = "okay";
+	};
+};	
+
+&i2c1 {
+	#address-cells = <1>;
+	#size-cells = <0>;
+	status = "okay";
+
+	atmel_mxt_ts@4b {
+		compatible = "atmel,maxtouch";
+		reg = <0x4b>;
+		reset-gpios = <&pioE 8 1>;	/* GPIO_ACTIVE_LOW = 1, must define value */
+		interrupt-parent = <&pioE>;
+		interrupts = <7 0x2>;	/* Falling edge only */
+		pinctrl-names = "default";
+		pinctrl-0 = <&pinctrl_mxt_irq_i2c &pinctrl_mxt_rst>;
 		status = "okay";
 	};
 };
@@ -52,7 +68,12 @@
 
 &pinctrl {
 	board {
-		pinctrl_mxt_irq: mxt_ts_irq {
+		pinctrl_mxt_irq_spi: mxt_ts_irq_spi {
+			atmel,pins =
+				<AT91_PIOE 6 AT91_PERIPH_GPIO AT91_PINCTRL_PULL_UP_DEGLITCH>;
+		};
+
+		pinctrl_mxt_irq_i2c: mxt_ts_irq_i2C {
 			atmel,pins =
 				<AT91_PIOE 7 AT91_PERIPH_GPIO AT91_PINCTRL_PULL_UP_DEGLITCH>;
 		};
