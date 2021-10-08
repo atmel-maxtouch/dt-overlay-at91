@@ -2,6 +2,17 @@
 
 ## 1. Introduction
 
+This duplicate version of the dt-overlay-at91 repository is used to hold example device
+trees for touchscreen development and bring up.  Changes were done primarily to the 
+sama5d3_explained_pda4.dtso file.  Follow instructions in the WIKI link below to compile
+the device tree files.
+
+   https://github.com/atmel-maxtouch/maXTouch_SPI_linux/wiki/Device-Tree-Files
+
+The original dt-overlay-at91 is located at the following link:
+
+   https://github.com/linux4sam/dt-overlay-at91
+
 A device tree overlay is a file that can be used at runtime (by the bootloader 
 in our case) to dynamically modify the device tree, by adding nodes to the tree 
 and making changes to properties in the existing tree.
@@ -77,20 +88,3 @@ To load additional FIT configurations, just append another configuration to the 
 Example to load the image sensor controller Device Tree overlay + sensor omnivision 0v7740:
 
     bootm 0x24000000#kernel_dtb#isc#ov7740
-
-## 5. Contributing
-
-To contribute to AT91 Device Tree Overlays you should submit the patches for 
-review to the github pull-request facility directly. Do not forget to Cc the 
-maintainers.
-
-Maintainers:
-
-Cristian Birsan <cristian.birsan@microchip.com>
-
-Nicolas Ferre <nicolas.ferre@microchip.com>
-
-When creating patches insert the [dt-overlay-at91] tag in the subject, for example
-use something like:
-
-    git format-patch -s --subject-prefix='dt-overlay-at91][PATCH' <origin>
