@@ -1,0 +1,141 @@
+// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
+/*
+ * at91-sama5d3_xplained_pda4.dtso - Device Tree file for SAMA5D3 Xplained board
+ * overlay blob for PDA TM4300 LCD screen.
+ *
+ * Copyright (C) 2018 Microchip Technology, Inc.
+ * Author: Eugen Hristev <eugen.hristev@microchip.com>
+ *
+ */
+/dts-v1/;
+/plugin/;
+
+#include "dt-bindings/pinctrl/at91.h"
+
+&spi0 {
+	cs-gpios = <&pioD 13 0>, <0>, <0>, <&pioD 16 1>;
+	#address-cells = <1>;
+	#size-cells = <0>;
+	status = "okay";
+
+	mchp_spi_ts@3 {
+		compatible = "microchip,mchp_spi_ts";
+		spi-max-frequency = <1000000>;
+		reg = <3>;
+		spi-cpha = <1>;
+		spi-cpol = <1>;
+		reset-gpios = <&pioE 8 1>;	/* GPIO_ACTIVE_LOW = 1 */ 
+	 	interrupt-parent = <&pioE>;
+		interrupts = <7 0x2>;
+		pinctrl-names = "default";
+		pinctrl-0 = <&pinctrl_mxt_irq_spi_pri &pinctrl_mxt_rst>;
+		status = "okay";
+	};
+};	
+
+&spi1 {
+	cs-gpios = <&pioC 25 0>;
+	#address-cells = <1>;
+	#size-cells = <0>;
+	status = "okay";
+
+	mchp_spi_ts@0 {
+		compatible = "microchip,mchp_spi_ts";
+		spi-max-frequency = <1000000>;
+		reg = <0>;
+		spi-cpha = <1>;
+		spi-cpol = <1>;
+	 	interrupt-parent = <&pioE>;
+		interrupts = <6 0x2>;
+		pinctrl-names = "default";
+		pinctrl-0 = <&pinctrl_mxt_irq_spi_sec>;
+		status = "okay";
+	};
+};	
+
+&hlcdc {
+	status = "okay";
+
+	hlcdc-display-controller {
+		pinctrl-names = "default";
+		pinctrl-0 = <&pinctrl_lcd_base &pinctrl_lcd_rgb888_alt>;
+		port@0 {
+			#address-cells = <1>;
+			#size-cells = <0>;
+			hlcdc_panel_output: endpoint@0 {
+				reg = <0>;
+				remote-endpoint = <&panel_input>;
+			};
+		};
+	};
+};
+
+&pinctrl {
+	board {
+		pinctrl_mxt_irq_spi_pri: mxt_ts_irq_spi_pri {
+			atmel,pins =
+				<AT91_PIOE 7 AT91_PERIPH_GPIO AT91_PINCTRL_PULL_UP_DEGLITCH>;
+		};
+
+		
+		pinctrl_mxt_irq_spi_sec: mxt_ts_irq_spi_sec {
+			atmel,pins =
+				<AT91_PIOE 6 AT91_PERIPH_GPIO AT91_PINCTRL_PULL_UP_DEGLITCH>;
+		};
+
+		pinctrl_mxt_rst: mxt_ts_rst {
+			atmel,pins =
+				<AT91_PIOE 8 AT91_PERIPH_GPIO AT91_PINCTRL_DEGLITCH>;
+		};
+	};
+};
+
+&{/} {
+	model = "Atmel SAMA5D3 Xplained TM43xx";
+
+	backlight: backlight {
+		compatible = "pwm-backlight";
+		pwms = <&hlcdc_pwm 0 50000 0>;
+		brightness-levels = <0 4 8 16 32 64 128 255>;
+		default-brightness-level = <7>;
+		power-supply = <&bl_reg>;
+		status = "okay";
+	};
+
+	bl_reg: backlight_regulator {
+		compatible = "regulator-fixed";
+		regulator-name = "backlight-power-supply";
+		regulator-min-microvolt = <5000000>;
+		regulator-max-microvolt = <5000000>;
+		status = "okay";
+	};
+
+	panel: panel {
+		compatible = "innolux,at043tn24", "simple-panel";
+		backlight = <&backlight>;
+		power-supply = <&panel_reg>;
+		#address-cells = <1>;
+		#size-cells = <0>;
+		status = "okay";
+
+		port@0 {
+			reg = <0>;
+			#address-cells = <1>;
+			#size-cells = <0>;
+
+			panel_input: endpoint@0 {
+				reg = <0>;
+				remote-endpoint = <&hlcdc_panel_output>;
+			};
+		};
+	};
+
+	panel_reg: panel_regulator {
+		compatible = "regulator-fixed";
+		regulator-name = "panel-power-supply";
+		regulator-min-microvolt = <3300000>;
+		regulator-max-microvolt = <3300000>;
+		status = "okay";
+	};
+};
+
