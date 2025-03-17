@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: (GPL-2.0+ OR MIT)
 /*
- * sama5d27_wlsom1_ek.its - Flattened Image Tree file for SAMA5D27 WLSOM1 EK
+ * Flattened Image Tree file for SAMA5D27 WLSOM1 EK
  *
  * Copyright (C) 2019 Microchip Technology, Inc.
  * Author: Eugen Hristev <eugen.hristev@microchip.com>
@@ -22,10 +22,10 @@
 			compression = "none";
 			load = <0x22000000>;
 			entry = <0x22000000>;
-			hash@1 {
+			hash-1 {
 				algo = "crc32";
 			};
-			hash@2 {
+			hash-2 {
 				algo = "sha1";
 			};
 		};
@@ -37,10 +37,10 @@
 			arch = "arm";
 			compression = "none";
 			load = <0x23000000>;
-			hash@1 {
+			hash-1 {
 				algo = "crc32";
 			};
-			hash@2 {
+			hash-2 {
 				algo = "sha1";
 			};
 		};
@@ -52,10 +52,10 @@
 			arch = "arm";
 			compression = "none";
 			load = <0x23100000>;
-			hash@1 {
+			hash-1 {
 				algo = "crc32";
 			};
-			hash@2 {
+			hash-2 {
 				algo = "sha1";
 			};
 		};
@@ -67,10 +67,10 @@
 			arch = "arm";
 			compression = "none";
 			load = <0x23110000>;
-			hash@1 {
+			hash-1 {
 				algo = "crc32";
 			};
-			hash@2 {
+			hash-2 {
 				algo = "sha1";
 			};
 		};
@@ -82,10 +82,10 @@
 			arch = "arm";
 			compression = "none";
 			load = <0x23120000>;
-			hash@1 {
+			hash-1 {
 				algo = "crc32";
 			};
-			hash@2 {
+			hash-2 {
 				algo = "sha1";
 			};
 		};
@@ -97,10 +97,10 @@
 			arch = "arm";
 			compression = "none";
 			load = <0x23130000>;
-			hash@1 {
+			hash-1 {
 				algo = "crc32";
 			};
-			hash@2 {
+			hash-2 {
 				algo = "sha1";
 			};
 		};
@@ -112,10 +112,10 @@
 			arch = "arm";
 			compression = "none";
 			load = <0x23140000>;
-			hash@1 {
+			hash-1 {
 				algo = "crc32";
 			};
-			hash@2 {
+			hash-2 {
 				algo = "sha1";
 			};
 		};
@@ -127,10 +127,10 @@
 			arch = "arm";
 			compression = "none";
 			load = <0x23150000>;
-			hash@1 {
+			hash-1 {
 				algo = "crc32";
 			};
-			hash@2 {
+			hash-2 {
 				algo = "sha1";
 			};
 		};
@@ -142,10 +142,10 @@
 			arch = "arm";
 			compression = "none";
 			load = <0x23160000>;
-			hash@1 {
+			hash-1 {
 				algo = "crc32";
 			};
-			hash@2 {
+			hash-2 {
 				algo = "sha1";
 			};
 		};
@@ -157,10 +157,10 @@
 			arch = "arm";
 			compression = "none";
 			load = <0x23190000>;
-			hash@1 {
+			hash-1 {
 				algo = "crc32";
 			};
-			hash@2 {
+			hash-2 {
 				algo = "sha1";
 			};
 		};
@@ -172,10 +172,10 @@
 			arch = "arm";
 			compression = "none";
 			load = <0x23170000>;
-			hash@1 {
+			hash-1 {
 				algo = "crc32";
 			};
-			hash@2 {
+			hash-2 {
 				algo = "sha1";
 			};
 		};
@@ -187,10 +187,25 @@
 			arch = "arm";
 			compression = "none";
 			load = <0x23200000>;
-			hash@1 {
+			hash-1 {
 				algo = "crc32";
 			};
-			hash@2 {
+			hash-2 {
+				algo = "sha1";
+			};
+		};
+
+		fdt_spi_click1 {
+			description = "Device Tree blob at25ff321a spi flash clickboard overlay";
+			data = /incbin/("./sama5d27_wlsom1_ek/sama5d27_wlsom1_ek_at25ff321a_click1.dtbo");
+			type = "flat_dt";
+			arch = "arm";
+			compression = "none";
+			load = <0x23210000>;
+			hash-1 {
+				algo = "crc32";
+			};
+			hash-2 {
 				algo = "sha1";
 			};
 		};
@@ -257,6 +272,11 @@
 		ptc {
 			description = "FDT overlay blob for PTC";
 			fdt = "fdt_ptc";
+		};
+
+		spi_click1 {
+			description = "FDT overlay blob for at25ff321a spi flash clickboard (1)";
+			fdt = "fdt_spi_click1";
 		};
 	};
 };
