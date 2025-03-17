@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: (GPL-2.0+ OR MIT)
 /*
- * sama7g5ek_isc_imx219.dtso - Device Tree file for SAMA7G5-EK board
+ * Device Tree file for SAMA7G5-EK board
  * overlay blob for ISC with imx219 sensor. The blob uses isc and i2c8
  *
  * Copyright (C) 2020 Microchip Technology Inc. and its subsidiaries
@@ -12,6 +12,7 @@
 
 #include "sama7g5-pinfunc.h"
 #include <dt-bindings/gpio/gpio.h>
+#include <dt-bindings/mfd/atmel-flexcom.h>
 
 &csi_dphy {
 	status = "okay";
@@ -69,9 +70,30 @@
 			clock-lanes = <0>;
 		};
 	};
+
+	port@2 {
+		reg = <2>;
+		csi2host_out: endpoint {
+			remote-endpoint = <&csi2dc_in>;
+		};
+	};
 };
 
 &csi2dc {
+	status = "okay";
+
+	ports {
+		port@0 {
+			csi2dc_in: endpoint {
+				remote-endpoint = <&csi2host_out>;
+				bus-type = <4>; /* MIPI CSI2 D-PHY */
+			};
+		};
+	};
+};
+
+&flx8 {
+	atmel,flexcom-mode = <ATMEL_FLEXCOM_MODE_TWI>;
 	status = "okay";
 };
 
@@ -96,12 +118,11 @@
 		clocks = <&imx219_clk>;
 		clock-names = "xclk";
 		pinctrl-names = "default";
-		pinctrl-0 = <&pinctrl_sensor_power &pinctrl_sensor_reset>;
+		pinctrl-0 = <&pinctrl_sensor_reset>;
 		VANA-supply = <&vana_imx219>; /* 2.8v */
 		VDIG-supply = <&vdig_imx219>; /* 1.8v */
 		VDDL-supply = <&vddl_imx219>; /* 1.2v */
-		reset-gpios = <&pioA PIN_PE1 GPIO_ACTIVE_HIGH>,
-				<&pioA PIN_PE2 GPIO_ACTIVE_HIGH>;
+		reset-gpios = <&pioA PIN_PE1 GPIO_ACTIVE_HIGH>;
 		status = "okay";
 
 		imx219_clk: camera-clk {
@@ -123,18 +144,14 @@
 };
 
 &pioA {
-	pinctrl_sensor_power: sensor_power {
-		pinmux = <PIN_PE1__GPIO>;
-		bias-disable;
-	};
-
 	pinctrl_sensor_reset: sensor_reset {
-		pinmux = <PIN_PE2__GPIO>;
+		pinmux = <PIN_PE1__GPIO>;
 		bias-disable;
 	};
 };
 
 &xisc {
+	microchip,mipi-mode;
 	status = "okay";
 };
 

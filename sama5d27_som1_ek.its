@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: (GPL-2.0+ OR MIT)
 /*
- * sama5d27_som1_ek.its - Flattened Image Tree file for SAMA5D27-SOM1-EK1 board
+ * Flattened Image Tree file for SAMA5D27-SOM1-EK1 board
  *
  * Copyright (C) 2018 Microchip Technology, Inc.
  * Author: Cristian Birsan <cristian.birsan@microchip.com>
@@ -22,10 +22,10 @@
 			compression = "none";
 			load = <0x22000000>;
 			entry = <0x22000000>;
-			hash@1 {
+			hash-1 {
 				algo = "crc32";
 			};
-			hash@2 {
+			hash-2 {
 				algo = "sha1";
 			};
 		};
@@ -37,10 +37,10 @@
 			arch = "arm";
 			compression = "none";
 			load = <0x23000000>;
-			hash@1 {
+			hash-1 {
 				algo = "crc32";
 			};
-			hash@2 {
+			hash-2 {
 				algo = "sha1";
 			};
 		};
@@ -52,10 +52,10 @@
 			arch = "arm";
 			compression = "none";
 			load = <0x23130000>;
-			hash@1 {
+			hash-1 {
 				algo = "crc32";
 			};
-			hash@2 {
+			hash-2 {
 				algo = "sha1";
 			};
 		};
@@ -67,10 +67,10 @@
 			arch = "arm";
 			compression = "none";
 			load = <0x23140000>;
-			hash@1 {
+			hash-1 {
 				algo = "crc32";
 			};
-			hash@2 {
+			hash-2 {
 				algo = "sha1";
 			};
 		};
@@ -82,10 +82,10 @@
 			arch = "arm";
 			compression = "none";
 			load = <0x23150000>;
-			hash@1 {
+			hash-1 {
 				algo = "crc32";
 			};
-			hash@2 {
+			hash-2 {
 				algo = "sha1";
 			};
 		};
@@ -97,10 +97,10 @@
 			arch = "arm";
 			compression = "none";
 			load = <0x23160000>;
-			hash@1 {
+			hash-1 {
 				algo = "crc32";
 			};
-			hash@2 {
+			hash-2 {
 				algo = "sha1";
 			};
 		};
@@ -112,10 +112,10 @@
 			arch = "arm";
 			compression = "none";
 			load = <0x23170000>;
-			hash@1 {
+			hash-1 {
 				algo = "crc32";
 			};
-			hash@2 {
+			hash-2 {
 				algo = "sha1";
 			};
 		};
@@ -127,10 +127,10 @@
 			arch = "arm";
 			compression = "none";
 			load = <0x23180000>;
-			hash@1 {
+			hash-1 {
 				algo = "crc32";
 			};
-			hash@2 {
+			hash-2 {
 				algo = "sha1";
 			};
 		};
@@ -142,13 +142,88 @@
                         arch = "arm";
                         compression = "none";
                         load = <0x23190000>;
-                        hash@1 {
+                        hash-1 {
                                 algo = "crc32";
                         };
-                        hash@2 {
+                        hash-2 {
                                 algo = "sha1";
                         };
                 };
+
+		fdt_mcp2518fd_click1 {
+			description = "Device Tree blob MCP2518FD Click overlay click 1";
+			data = /incbin/("./sama5d27_som1_ek/sama5d27_som1_ek_mcp2518fd_click1.dtbo");
+			type = "flat_dt";
+			arch = "arm";
+			compression = "none";
+			load = <0x231A0000>;
+			hash-1 {
+			        algo = "crc32";
+			};
+			hash-2 {
+			        algo = "sha1";
+			};
+		};
+
+		fdt_mcp2518fd_click2 {
+			description = "Device Tree blob MCP2518FD Click overlay click 2";
+			data = /incbin/("./sama5d27_som1_ek/sama5d27_som1_ek_mcp2518fd_click2.dtbo");
+			type = "flat_dt";
+			arch = "arm";
+			compression = "none";
+			load = <0x231B0000>;
+			hash-1 {
+			        algo = "crc32";
+			};
+			hash-2 {
+			        algo = "sha1";
+			};
+		};
+
+		fdt_wilc_spi {
+			description = "Device Tree blob WILC SPI overlay";
+			data = /incbin/("./sama5d27_som1_ek/sama5d27_som1_ek_wilc_spi.dtbo");
+			type = "flat_dt";
+			arch = "arm";
+			compression = "none";
+			load = <0x231C0000>;
+			hash-1 {
+			        algo = "crc32";
+			};
+			hash-2 {
+			        algo = "sha1";
+			};
+		};
+
+		fdt_spi_click1 {
+			description = "Device Tree blob at25ff321a spi flash clickboard overlay";
+			data = /incbin/("./sama5d27_som1_ek/sama5d27_som1_ek_at25ff321a_click1.dtbo");
+			type = "flat_dt";
+			arch = "arm";
+			compression = "none";
+			load = <0x231D0000>;
+			hash-1 {
+				algo = "crc32";
+			};
+			hash-2 {
+				algo = "sha1";
+			};
+		};
+
+		fdt_wilc_mmc_spi {
+			description = "Device Tree blob WILC MMC-SPI overlay";
+			data = /incbin/("./sama5d27_som1_ek/sama5d27_som1_ek_wilc_mmc_spi.dtbo");
+			type = "flat_dt";
+			arch = "arm";
+			compression = "none";
+			load = <0x231E0000>;
+			hash-1 {
+			        algo = "crc32";
+			};
+			hash-2 {
+			        algo = "sha1";
+			};
+		};
 	};
 
 	configurations {
@@ -198,5 +273,30 @@
                         description = "FDT overlay blob for Thermo5 click";
                         fdt = "fdt_thermo5";
                 };
+
+		mcp2518fd_click1 {
+			description = "FDT overlay blob for MCP2518FD click1";
+			fdt = "fdt_mcp2518fd_click1";
+		};
+
+		mcp2518fd_click2 {
+			description = "FDT overlay blob for MCP2518FD click2";
+			fdt = "fdt_mcp2518fd_click2";
+		};
+
+		wilc_spi {
+			description = "FDT overlay blob for WILC SPI devices";
+			fdt = "fdt_wilc_spi";
+		};
+
+		spi_click1 {
+			description = "FDT overlay blob for at25ff321a spi flash clickboard (1)";
+			fdt = "fdt_spi_click1";
+		};
+
+		wilc_mmc_spi {
+			description = "FDT overlay blob for WILC MMC-SPI devices";
+			fdt = "fdt_wilc_mmc_spi";
+		};
 	};
 };

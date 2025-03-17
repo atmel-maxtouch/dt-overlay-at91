@@ -1,0 +1,53 @@
+// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
+/*
+ * Device Tree file for SAMA7G5-EK board overlay blob for PDMC0.
+ *
+ * Copyright (C) 2022 Microchip Technology Inc. and its subsidiaries
+ * Author: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
+ *
+ */
+
+/* NOTE: make sure JP2 is closed to enable the PDM microphones */
+
+/dts-v1/;
+/plugin/;
+
+#include "dt-bindings/sound/microchip,asrc-card.h"
+#include "sama7g5-pinfunc.h"
+
+&gmac1 {
+	status = "disabled";
+};
+
+&pdmc0 {
+	status = "okay";
+};
+
+&sound {
+	#address-cells = <1>;
+	#size-cells = <0>;
+
+	/* make sure id from dai-link@<id> and reg are unique */
+	microchip,dai-link@2 {
+		reg = <2>;
+		microchip,convert-channels = <4>;
+		microchip,convert-rate = <48000>;
+		microchip,convert-sample-format = <MCHP_ASRC_PCM_FORMAT_S24_LE>;
+		microchip,format = "pdm";
+		microchip,bitclock-master = <&dai_link_master2>;
+		dai_link_master2: cpu {		/* make sure label is unique */
+			sound-dai = <&pdmc0>;
+		};
+		codec {
+			sound-dai = <&dmic_codec>;
+		};
+	};
+};
+
+&{/} {
+	dmic_codec: dmic@0 {
+		#sound-dai-cells = <0>;
+		compatible = "dmic-codec";
+		num-channels = <4>;
+	};
+};

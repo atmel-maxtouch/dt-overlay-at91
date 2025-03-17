@@ -1,17 +1,6 @@
-# AT91 Device Tree Overlays and FIT image
+# Microchip Device Tree Overlays and FIT image
 
 ## 1. Introduction
-
-This duplicate version of the dt-overlay-at91 repository is used to hold example device
-trees for touchscreen development and bring up.  Changes were done primarily to the 
-sama5d3_explained_pda4.dtso file.  Follow instructions in the WIKI link below to compile
-the device tree files.
-
-   https://github.com/atmel-maxtouch/maXTouch_SPI_linux/wiki/Device-Tree-Files
-
-The original dt-overlay-at91 is located at the following link:
-
-   https://github.com/linux4sam/dt-overlay-at91
 
 A device tree overlay is a file that can be used at runtime (by the bootloader 
 in our case) to dynamically modify the device tree, by adding nodes to the tree 
@@ -24,7 +13,8 @@ of various types and enhances integrity protection of images with stronger check
 
 To build the overlays for a board make sure the following steps are done:
 
-* the environment variables ARCH and CROSS_COMPILE are set correctly
+* the environment variables ARCH and CROSS_COMPILE are set correctly. By default,
+ARCH is set to arm and will need to be explicitly overridden for riscv.
 * (optional) the environment variable KERNEL_DIR points to Linux kernel and the 
 kernel was already built for the board. This is needed because the DT Overlay 
 repository uses the Device Tree Compiler (dtc) from the kernel source tree. By default, 
@@ -45,7 +35,8 @@ The following example shows how to build the overlays for sama5d2_xplained:
  To build the FIT image with overlays for a board make sure the following steps 
 are done:
 
-* the environment variables ARCH and CROSS_COMPILE are set correctly
+* the environment variables ARCH and CROSS_COMPILE are set correctly. By default,
+ARCH is set to arm and will need to be explicitly overridden for riscv.
 * (optional) the environment variable KERNEL_DIR points to Linux kernel and the 
 kernel was already built for the board. This is needed because the DT Overlay 
 repository uses the Device Tree Compiler (dtc) from the kernel source tree. By 
@@ -88,3 +79,24 @@ To load additional FIT configurations, just append another configuration to the 
 Example to load the image sensor controller Device Tree overlay + sensor omnivision 0v7740:
 
     bootm 0x24000000#kernel_dtb#isc#ov7740
+
+## 5. Contributing
+
+To contribute to Microchip Device Tree Overlays, you should submit patches for 
+review to the github pull-request facility directly. Do not forget to Cc the 
+maintainers.
+
+Maintainers:
+
+Cristian Birsan <cristian.birsan@microchip.com>
+
+Nicolas Ferre <nicolas.ferre@microchip.com>
+
+For PolarFire SoC (MPFS), please also Cc:
+
+Valentina Fernandez Alanis <valentina.fernandezalanis@microchip.com>
+
+When creating patches insert the [dt-overlay-mchp] tag in the subject, for example
+use something like:
+
+    git format-patch -s --subject-prefix='dt-overlay-mchp][PATCH' <origin>
