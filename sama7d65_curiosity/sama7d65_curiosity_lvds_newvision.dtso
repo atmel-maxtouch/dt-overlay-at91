@@ -1,24 +1,24 @@
 // SPDX-License-Identifier: (GPL-2.0+ OR MIT)
 /*
- *  Device Tree overlay for SAMA7D65-CURIOSITY board
- *  in order to use MIPI displays
+ *  Device Tree overlay for sama7d65-curiosity board in order to use
+ *  10.1inch new vision lvds display panel
  *
- *  Copyright (c) 2024 Microchip Technology Inc. and its subsidiaries
+ *  Copyright (c) 2025 Microchip Technology Inc. and its subsidiaries
  *
- *  Author: Romain Sioen <romain.sioen@microchip.com>
+ *  Author: Sandeep Sheriker M <sandeep.sheriker@microchip.com>
  *
  */
 /dts-v1/;
 /plugin/;
-#include "sama7d65-pinfunc.h"
-#include <dt-bindings/mfd/atmel-flexcom.h>
 #include <dt-bindings/clock/at91.h>
-#include <dt-bindings/pinctrl/at91.h>
 #include <dt-bindings/gpio/gpio.h>
+#include <dt-bindings/mfd/atmel-flexcom.h>
+#include <dt-bindings/pinctrl/at91.h>
+#include "sama7d65-pinfunc.h"
 
 &{/}
 {
-	model = "Microchip SAMA7D65 Curiosity MIPI";
+	model = "Microchip SAMA7D65 Curiosity LVDS";
 
 	backlight: backlight {
 		compatible = "pwm-backlight";
@@ -28,66 +28,52 @@
 		power-supply = <&vdd_5v>;
 	};
 
-	mic23150_reg: mic23150-regulator {
+	display {
+		compatible = "panel-lvds";
+		power-supply = <&panel_reg>;
+		backlight = <&backlight>;
+		width-mm = <216>;
+		height-mm = <135>;
+		data-mapping = "vesa-24";
+
+		panel-timing {
+			clock-frequency = <65000000>;
+			hactive = <1280>;
+			vactive = <800>;
+			hfront-porch = <48>;
+			hback-porch = <80>;
+			hsync-len = <32>;
+			vfront-porch = <8>;
+			vback-porch = <16>;
+			vsync-len = <8>;
+		};
+
+
+		port {
+			lcd_lvds_in: endpoint {
+				remote-endpoint = <&lvdsc_out>;
+			};
+		};
+	};
+
+	panel_reg: mic23150-regulator {
 		compatible = "regulator-fixed";
 		regulator-name = "panel-power-supply";
 		regulator-min-microvolt = <3300000>;
 		regulator-max-microvolt = <3300000>;
 		gpios = <&pioa PIN_PB18 GPIO_ACTIVE_HIGH>;
 		enable-active-high;
+		regulator-always-on;
 	};
 
 	vdd_5v: fixed-regulator-vdd-5v {
- 		compatible = "regulator-fixed";
+		compatible = "regulator-fixed";
 		regulator-name = "VDD_5V";
 		regulator-min-microvolt = <5000000>;
 		regulator-max-microvolt = <5000000>;
 		regulator-always-on;
 	};
-};
 
-&dsi {
-	status = "okay";
-	#address-cells = <1>;
-	#size-cells = <0>;
-
-	ports {
-		#address-cells = <1>;
-		#size-cells = <0>;
-
-		port@0 {
-			reg = <0>;
-			dsi_in: endpoint {
-				remote-endpoint = <&xlcdc_out>;
-			};
-		};
-
-		port@1 {
-			reg = <1>;
-			dsi_out: endpoint {
-				remote-endpoint = <&mipi_in_panel>;
-			};
-		};
-	};
-
-	panel@0 {
-		reg = <0>;
-		compatible = "microchip,ac40t08a-mipi-panel";
-		backlight = <&backlight>;
-		vcc-supply = <&mic23150_reg>;
-		iovcc-supply = <&vldo1>;
-		/* Provide the panel-himax-hx8394 driver with a fake GPIO. */
-		reset-gpio = <&pioa PIN_PC3 GPIO_ACTIVE_LOW>; /* Conflict with RPi 40Pin GPIO17 */
-		#address-cells = <1>;
-		#size-cells = <0>;
-
-		port@0 {
-			reg = <0>;
-			mipi_in_panel: endpoint {
-				remote-endpoint = <&dsi_out>;
-			};
-		};
-	};
 };
 
 &flx0 {
@@ -115,8 +101,30 @@
 		interrupts = <PIN_PB16 0x0>;
 		pinctrl-names = "default";
 		pinctrl-0 = <&pinctrl_mxt_irq>;
-		vdda-supply = <&mic23150_reg>;
+		vdda-supply = <&panel_reg>;
 		vdd-supply = <&vdd_3v3>;
+	};
+};
+
+&lvdsc {
+	#address-cells = <1>;
+	#size-cells = <0>;
+	status = "okay";
+
+	port@0 {
+		reg = <0>;
+
+		lvdsc_in: endpoint {
+			remote-endpoint = <&xlcdc_out>;
+		};
+	};
+
+	port@1 {
+		reg = <1>;
+
+		lvdsc_out: endpoint {
+			remote-endpoint = <&lcd_lvds_in>;
+		};
 	};
 };
 
@@ -152,20 +160,20 @@
 };
 
 &xlcdc {
-	clocks = <&pmc PMC_TYPE_PERIPHERAL 56>, <&pmc PMC_TYPE_GCK 56>, <&clk32k 1>;
-	clock-names = "periph_clk", "sys_clk", "slow_clk";
-	assigned-clocks = <&pmc PMC_TYPE_GCK 56>;
-	assigned-clock-rates = <66000000>;
-	assigned-clock-parents = <&pmc PMC_TYPE_CORE PMC_MCK1>;
+	clocks = <&pmc PMC_TYPE_PERIPHERAL 56>, <&pmc PMC_TYPE_CORE PMC_LVDSPLL>, <&clk32k 1>;
+	clock-names = "periph_clk", "lvds_pll_clk", "slow_clk";
+	assigned-clocks = <&pmc PMC_TYPE_CORE PMC_MCK3>;
+	assigned-clock-rates = <266500000>;
 	status = "okay";
 
 	hlcdc-display-controller {
 		port@0 {
 			#address-cells = <1>;
 			#size-cells = <0>;
+
 			xlcdc_out: endpoint@0 {
 				reg = <0>;
-				remote-endpoint = <&dsi_in>;
+				remote-endpoint = <&lvdsc_in>;
 			};
 		};
 	};
